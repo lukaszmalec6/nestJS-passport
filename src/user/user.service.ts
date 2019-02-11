@@ -6,7 +6,7 @@ import {InjectableSymbols} from '../injectable';
 export class UserSerivce {
   constructor(@Inject(InjectableSymbols.userRepository) private readonly userRepository: typeof User) {}
 
-  public async getById(userId: number): Promise<User> {
+  public async getById(userId: string): Promise<User> {
     try {
       return await this.userRepository.findOne({where: {id: userId}})
     } catch (error) {
@@ -19,6 +19,19 @@ export class UserSerivce {
       return await this.userRepository.findOne({where: {email}})
     } catch (error) {
       throw new Error(`Can't find user by email: ${email}: ${error}`);
+    }
+  }
+
+  public async getProfile(email: string): Promise<User> {
+    try {
+      return await this.userRepository.findOne({
+        where: {email},
+        attributes: {
+          exclude: ['id', 'password']
+        }
+      })
+    } catch (error) {
+      throw new Error(`Can't get user profile for user: ${email}: ${error}`);
     }
   }
 

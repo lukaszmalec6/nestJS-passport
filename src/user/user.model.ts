@@ -1,4 +1,4 @@
-import {Table, Column, Model, AllowNull, DataType, Unique, Default} from 'sequelize-typescript';
+import {Table, Column, Model, AllowNull, DataType, Unique, Default, PrimaryKey, IsUUID, AutoIncrement} from 'sequelize-typescript';
 
 export enum UserStatus {
   notConfirmed = 'notConfirmed',
@@ -22,8 +22,15 @@ export interface IUserData {
 
 @Table({
   tableName: 'user',
+  timestamps: true,
 })
 export class User extends Model<User> {
+  
+  @PrimaryKey
+  @Default(DataType.UUIDV4)
+  @Column({type: DataType.UUID}) 
+  id: string;
+
   @AllowNull(false)
   @Column
   firstName: string;

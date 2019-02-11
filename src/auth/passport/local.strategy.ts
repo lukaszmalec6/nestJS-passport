@@ -3,11 +3,11 @@ import {use} from 'passport';
 import {Strategy} from 'passport-local';
 import {createHmac} from 'crypto';
 import {User} from '../../user/user.model';
-import {Request} from '../auth.controller';
 import {UserSerivce} from '../../user/user.service';
 import {InjectableSymbols} from '../../injectable';
 import {IConfig} from '../../config/config.interface';
 import {JWTStrategySymbols} from './jwt.strategy.symbols';
+import {Request} from '../../interfaces';
 
 @Injectable()
 export class LocalStrategy {
