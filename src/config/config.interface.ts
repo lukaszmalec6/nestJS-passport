@@ -1,8 +1,14 @@
 export interface IConfig {
   auth: {
-    authSecret: string;
-    authTokenExpiresIn: string;
     salt: string;
+    accessToken: {
+      secret: string;
+      expiresIn: string;
+    },
+    refreshToken: {
+      secret: string;
+      expiresIn: string;
+    }
   },
   db: {
     host: string,

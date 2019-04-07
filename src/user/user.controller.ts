@@ -14,6 +14,10 @@ export class UserController {
      @api {get} api/user/search?email=<email> Search user
      @apiName Search user
      @apiGroup User
+     @apiHeader {String} Authorization access token
+     @apiHeaderExample {json} Header-example: {
+       "Authorization": "Bearer accessToken" 
+      }
      @apiParam (query string) {string} email user email
      @apiSuccess {json} response user data
      @apiSuccessExample Success-Response:
@@ -55,6 +59,10 @@ export class UserController {
    @api {get} api/user/profile Logged-in user profile
    @apiName User profile
    @apiGroup User
+   @apiHeader {String} Authorization access token
+   @apiHeaderExample {json} Header-example: {
+       "Authorization": "Bearer accessToken" 
+    }
    @apiSuccess {json} response user profile
    @apiSuccessExample Success-Response:
     {

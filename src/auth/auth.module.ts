@@ -10,11 +10,17 @@ import {InjectableSymbols} from '../injectable';
 import {bodyValidator} from '../middlewares/body-validator.middleware';
 import {registerSchema} from './validators/register.schema';
 import {loginSchema} from './validators/login.schema';
-import {config} from '../config/config';
 import {JWTStrategySymbols} from './passport/jwt.strategy.symbols';
+import {configProvider} from '../config/config.module';
+import {RefreshTokenMiddleware} from './middlewares.ts/refresh-token.middleware';
+import {TokenStorageModule} from '../token-storage/token-storage';
 
 @Module({
+  imports: [
+    TokenStorageModule
+  ],
   providers: [
+    configProvider,
     UserSerivce,
     AuthService,
     LocalStrategy,
@@ -22,10 +28,6 @@ import {JWTStrategySymbols} from './passport/jwt.strategy.symbols';
     {
       provide: InjectableSymbols.userRepository,
       useValue: User,
-    },
-    {
-      provide: InjectableSymbols.config,
-      useValue: config
     }
   ],
   controllers: [AuthController]
@@ -36,14 +38,13 @@ export class AuthModule implements NestModule {
       .apply(
         bodyValidator(registerSchema),
         authenticate(JWTStrategySymbols.register, {session: false})
-      )
-      .forRoutes('api/auth/register');
-
-    consumer
+      ).forRoutes('api/auth/register')
       .apply(
         bodyValidator(loginSchema),
         authenticate(JWTStrategySymbols.login, {session: false})
-      )
-      .forRoutes('api/auth/login');
+      ).forRoutes('api/auth/login')
+      .apply(
+        RefreshTokenMiddleware
+      ).forRoutes('api/auth/refresh')
   }
 }
