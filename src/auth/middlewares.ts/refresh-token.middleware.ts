@@ -6,13 +6,15 @@ import {InjectableSymbols} from '../../injectable';
 import {Request} from '../../interfaces';
 import {User} from '../../user/user.model';
 import {IJwtPayload} from '../interfaces/jwt-payload.interface';
+import {TokenStorageService} from '../../token-storage/token-storage.service';
 
 @Injectable()
 export class RefreshTokenMiddleware implements NestMiddleware {
-  constructor(@Inject(InjectableSymbols.config) private readonly config: IConfig) {}
+  constructor(@Inject(InjectableSymbols.config) private readonly config: IConfig,
+  private readonly tokenRepo: TokenStorageService) {}
 
 
-  resolve = () => (req: Request, res: Response, next: Function) => {
+  resolve = () => async (req: Request, res: Response, next: Function) => {
     const {headers} = req;
     if (!headers['authorization'] || headers['authorization'].split(' ')[0] !== 'Bearer') {
       throw new BadRequestException(`Invalid Authorization header`);
@@ -23,6 +25,9 @@ export class RefreshTokenMiddleware implements NestMiddleware {
     }
     try {
       const payload = verify(refreshToken, this.config.auth.refreshToken.secret) as IJwtPayload;
+      if (refreshToken !== await this.tokenRepo.getRefreshToken(payload.userId)) {
+        throw new BadRequestException(`Your refresh token has been revoked`);
+      }
       req.user = new User();
       req.user.id = payload.userId;
       next();
@@ -30,7 +35,7 @@ export class RefreshTokenMiddleware implements NestMiddleware {
       if (error.name === 'TokenExpiredError') {
         throw new UnauthorizedException(`Refresh token has expired`);
       }
-      throw new UnauthorizedException(`Invalid refresh token`);
+      throw new UnauthorizedException(error.message);
     }
   }
 }
