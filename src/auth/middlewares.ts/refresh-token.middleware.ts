@@ -1,17 +1,23 @@
 
 import {Injectable, UnauthorizedException, BadRequestException, Inject, NestMiddleware, Next} from '@nestjs/common';
 import {verify} from 'jsonwebtoken';
-import {IConfig} from '../../config/config.interface';
-import {InjectableSymbols} from '../../injectable';
 import {Request} from '../../interfaces';
 import {User} from '../../user/user.model';
 import {IJwtPayload} from '../interfaces/jwt-payload.interface';
 import {TokenStorageService} from '../../token-storage/token-storage.service';
+import {ConfigService} from '../../config/config.service';
 
 @Injectable()
 export class RefreshTokenMiddleware implements NestMiddleware {
-  constructor(@Inject(InjectableSymbols.config) private readonly config: IConfig,
-  private readonly tokenRepo: TokenStorageService) {}
+
+  private readonly refreshTokenSecret: string;
+
+  constructor(
+    private readonly config: ConfigService,
+    private readonly tokenRepo: TokenStorageService
+  ) {
+    this.refreshTokenSecret = this.config.get('REFRESH_TOKEN_SECRET');
+  }
 
 
   resolve = () => async (req: Request, res: Response, next: Function) => {
@@ -24,12 +30,13 @@ export class RefreshTokenMiddleware implements NestMiddleware {
       throw new BadRequestException(`Refresh token not found`);
     }
     try {
-      const payload = verify(refreshToken, this.config.auth.refreshToken.secret) as IJwtPayload;
+      const payload = verify(refreshToken, this.refreshTokenSecret) as IJwtPayload;
       if (refreshToken !== await this.tokenRepo.getRefreshToken(payload.userId)) {
         throw new BadRequestException(`Your refresh token has been revoked`);
       }
-      req.user = new User();
-      req.user.id = payload.userId;
+      req.user = new User({
+        id: payload.userId
+      });
       next();
     } catch (error) {
       if (error.name === 'TokenExpiredError') {

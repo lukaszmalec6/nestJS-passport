@@ -1,20 +1,24 @@
-import {Injectable, UnauthorizedException, Inject, BadRequestException} from '@nestjs/common';
+import {Injectable, UnauthorizedException, BadRequestException} from '@nestjs/common';
 import {use} from 'passport';
 import {Strategy} from 'passport-local';
 import {createHmac} from 'crypto';
 import {UserSerivce} from '../../user/user.service';
-import {InjectableSymbols} from '../../injectable';
-import {IConfig} from '../../config/config.interface';
 import {JWTStrategySymbols} from './jwt.strategy.symbols';
 import {Request} from '../../interfaces';
+import {EmailSenderService} from '../../email-sender/email-sender.service';
+import {ConfigService} from '../../config/config.service';
 
 @Injectable()
 export class LocalStrategy {
 
+  private readonly salt: string;
+
   constructor(
+    private readonly config: ConfigService,
     private readonly userService: UserSerivce,
-    @Inject(InjectableSymbols.config) private readonly config: IConfig
+    private readonly mailer: EmailSenderService
   ) {
+    this.salt = this.config.get('SALT');
     this.init();
   }
 
@@ -33,9 +37,9 @@ export class LocalStrategy {
           return done(new BadRequestException(`Email already in use`), false);
         }
         const {firstName, lastName} = req.body;
-        const hash = this.generateHashedPassword(password, this.config.auth.salt);
+        const hash = this.generateHashedPassword(password, this.salt);
         const user = await this.userService.create({firstName, lastName, email, password: hash});
-
+        await this.mailer.sendPostRegisterEmail(email);
         done(null, user);
       } catch (error) {
         done(error, false);
@@ -52,7 +56,7 @@ export class LocalStrategy {
           return done(new UnauthorizedException(`Email not found`), false);
         }
 
-        const hash = this.generateHashedPassword(password, this.config.auth.salt);
+        const hash = this.generateHashedPassword(password, this.salt);
         if (hash !== user.password) {
           return done(new UnauthorizedException(`Wrong password`), false);
         }

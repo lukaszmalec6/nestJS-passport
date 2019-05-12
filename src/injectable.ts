@@ -1,6 +1,4 @@
 export enum InjectableSymbols {
-  userService = 'userService',
-  userRepository = 'userRepository',
-  authService = 'authService',
-  config = 'config'
+  db = 'db',
+  userRepository = 'userRepository'
 }

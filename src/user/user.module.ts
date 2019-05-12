@@ -16,6 +16,7 @@ import {InjectableSymbols} from '../injectable';
       provide: InjectableSymbols.userRepository,
       useValue: User,
     }
-  ]
+  ],
+  exports: [UserSerivce]
 })
 export class UserModule {}

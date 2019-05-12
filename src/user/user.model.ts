@@ -1,4 +1,5 @@
-import {Table, Column, Model, AllowNull, DataType, Unique, Default, PrimaryKey, IsUUID, AutoIncrement} from 'sequelize-typescript';
+import {Table, Column, Model, AllowNull, DataType, Unique, Default, PrimaryKey} from 'sequelize-typescript';
+import {Injectable} from '@nestjs/common';
 
 export enum UserStatus {
   notConfirmed = 'notConfirmed',
@@ -19,7 +20,7 @@ export interface IUserData {
   status?: UserStatus;
   role?: UserRole;
 }
-
+@Injectable()
 @Table({
   tableName: 'user',
   timestamps: true,

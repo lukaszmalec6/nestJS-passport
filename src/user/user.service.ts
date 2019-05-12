@@ -37,13 +37,11 @@ export class UserSerivce {
 
   public async create(userData: IUserData): Promise<User> {
     try {
-      const user = new User();
-      user.firstName = userData.firstName;
-      user.lastName = userData.lastName;
-      user.email = userData.email;
-      user.password = userData.password;
-      user.status = userData.status || UserStatus.notConfirmed;
-      user.role = UserRole.standard;
+      const user = new User({
+        ...userData,
+        status: userData.status || UserStatus.notConfirmed,
+        role: UserRole.standard,
+      });
       return await user.save();
     } catch (error) {
       throw new Error(`Can't save user with data ${JSON.stringify(userData)}: ${error}`);

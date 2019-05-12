@@ -1,6 +1,5 @@
 import {Controller, Post, Get, Req, UseGuards} from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
-
 import {AuthService} from './auth.service';
 import {IToken} from './interfaces/token.interface';
 import {RolesGuard} from './guards/roles.guard';
@@ -11,7 +10,9 @@ import {Roles} from '../decorators';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService
+  ) {}
 
   /**
    @api {post} api/auth/register Register new user
