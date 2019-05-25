@@ -5,7 +5,7 @@ import {IJwtPayload} from '../types/jwt-payload.interface';
 import {UserSerivce} from '../../user/user.service';
 import {TokenStorageService} from '../token-storage/token-storage.service';
 import {ConfigService} from '../../config/config.service';
-import {Request} from '../../_common/interfaces';
+import {Request} from '../../_common/types';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

@@ -4,7 +4,7 @@ import {Strategy} from 'passport-local';
 import {createHmac} from 'crypto';
 import {UserSerivce} from '../../user/user.service';
 import {JWTStrategySymbols} from '../../injectable';
-import {Request} from '../../_common/interfaces';
+import {Request} from '../../_common/types';
 import {EmailSenderService} from '../../_common/email-sender';
 import {ConfigService} from '../../config/config.service';
 

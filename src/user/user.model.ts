@@ -1,5 +1,6 @@
 import {Table, Column, Model, AllowNull, DataType, Unique, Default, PrimaryKey} from 'sequelize-typescript';
 import {Injectable} from '@nestjs/common';
+import {ApiModelProperty} from '@nestjs/swagger';
 
 export enum UserStatus {
   notConfirmed = 'notConfirmed',
@@ -28,18 +29,22 @@ export interface IUserData {
 export class User extends Model<User> {
   
   @PrimaryKey
+  @ApiModelProperty()
   @Default(DataType.UUIDV4)
   @Column({type: DataType.UUID}) 
   id: string;
 
+  @ApiModelProperty()
   @AllowNull(false)
   @Column
   firstName: string;
 
+  @ApiModelProperty()
   @AllowNull(false)
   @Column
   lastName: string;
 
+  @ApiModelProperty()
   @AllowNull(false)
   @Unique
   @Column
@@ -49,12 +54,13 @@ export class User extends Model<User> {
   @Column
   password: string;
 
+  @ApiModelProperty()
   @AllowNull(false)
   @Default(UserStatus.notConfirmed)
   @Column({type: DataType.ENUM(UserStatus.notConfirmed, UserStatus.banned, UserStatus.active)}) 
   status: string;
 
-
+  @ApiModelProperty()
   @AllowNull(false)
   @Default(UserRole.standard)
   @Column({type: DataType.ENUM(UserRole.premium, UserRole.standard)}) 

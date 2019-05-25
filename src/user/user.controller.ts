@@ -1,49 +1,34 @@
+import {
+  ApiUseTags,
+  ApiOkResponse,
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
+  ApiImplicitQuery,
+  ApiImplicitHeader,
+  ApiUnauthorizedResponse
+} from '@nestjs/swagger';
 import {Controller, Get, NotFoundException, BadRequestException, Query, Req, UseGuards} from '@nestjs/common';
 import {UserSerivce} from './user.service';
 import {validate, string} from 'joi';
 import {User} from './user.model';
-import {Request} from '../_common/interfaces';
+import {Request, ApiError} from '../_common/types';
 import {AuthGuard} from '@nestjs/passport';
 import {JWTStrategySymbols} from '../injectable';
 
-@Controller('api/user')
+@ApiUseTags(`user`)
+@Controller(`api/user`)
 export class UserController {
-  constructor(private readonly userService: UserSerivce) {}
-
-  /**
-     @api {get} api/user/search?email=<email> Search user
-     @apiName Search user
-     @apiGroup User
-     @apiHeader {String} Authorization access token
-     @apiHeaderExample {json} Header-example: {
-       "Authorization": "Bearer accessToken" 
-      }
-     @apiParam (query string) {string} email user email
-     @apiSuccess {json} response user data
-     @apiSuccessExample Success-Response:
-       {
-         "id": "cbf2477d-8def-4308-bdfb-808ca4dfe2e4",
-         "firstName": "Taylor",
-         "lastName": "Swift",
-         "email": "tay.swift@gmail.com",
-         "password": "#####",
-         "status": "notConfirmed",
-         "role": "standard"
-         "createdAt": "2019-02-11 20:38:43.643+01"
-         "updatedAt": "2019-02-11 20:38:43.643+01"
-       }
-    
-     @apiError BadRequest Wrong query param email
-     @apiError NotFound User not found
-     @apiErrorExample Error-Response:
-       {
-         "statusCode": 400,
-         "error": "Bad Request",
-         "message": "Wrong query param email: <email>"
-       }  
-  */
-  @Get('/search')
-  async search(@Query() query: {email: string}): Promise<User> {
+  constructor(
+    private readonly userService: UserSerivce
+  ) {}
+  
+  @Get(`/search`)
+  @ApiImplicitQuery({name:`email`, description: `Searched user email`, type: string})
+  @ApiOkResponse({description: `User found`, type: User})
+  @ApiBadRequestResponse({description: `Wrong email`, type: ApiError})
+  @ApiNotFoundResponse({description: `User not found`, type: ApiError})
+  @ApiImplicitHeader({name: `Authorization`, required: true, description: `Bearer {access token}`})
+  public async search(@Query() query: {email: string}): Promise<User> {
     const {email} = query;
     if (validate(email, string().email({minDomainAtoms: 2})).error) {
       throw new BadRequestException(`Wrong query param email: ${email}`);
@@ -55,30 +40,12 @@ export class UserController {
     return user;
   }
 
-  /**
-   @api {get} api/user/profile Logged-in user profile
-   @apiName User profile
-   @apiGroup User
-   @apiHeader {String} Authorization access token
-   @apiHeaderExample {json} Header-example: {
-       "Authorization": "Bearer accessToken" 
-    }
-   @apiSuccess {json} response user profile
-   @apiSuccessExample Success-Response:
-    {
-        "firstName": "Jane",
-        "lastName": "Doe",
-        "email": "jane.doe@gmail.com",
-        "status": "notConfirmed",
-        "role": "standard",
-        "createdAt": "2019-02-11T19:38:43.643Z",
-        "updatedAt": "2019-02-11T19:38:43.643Z"
-    }
-  */
-
-  @Get('/profile')
+  @Get(`/profile`)
+  @ApiOkResponse({description: `User profile`, type: User})
+  @ApiUnauthorizedResponse({description: `Unathorized`, type: ApiError})
+  @ApiImplicitHeader({name: `Authorization`, required: true, description: `Bearer {access token}`})
   @UseGuards(AuthGuard(JWTStrategySymbols.jwt))
-  async getUserProfile(@Req() req: Request): Promise<User> {
-    return await this.userService.getProfile(req.user.email);
+  public getUserProfile(@Req() req: Request): Promise<User> {
+    return this.userService.getProfile(req.user.email);
   }
 }

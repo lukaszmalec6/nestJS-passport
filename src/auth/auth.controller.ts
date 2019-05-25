@@ -2,7 +2,7 @@ import {ApiOkResponse, ApiBadRequestResponse, ApiImplicitBody, ApiUnauthorizedRe
 import {Controller, Post, Req, UseGuards} from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
 import {AuthService} from './auth.service';
-import {Request, ApiError} from '../_common/interfaces';
+import {Request, ApiError} from '../_common/types';
 import {JWTStrategySymbols} from '../injectable';
 import {UserCreate, UserToken, UserLogin} from './types';
 @ApiUseTags(`auth`)

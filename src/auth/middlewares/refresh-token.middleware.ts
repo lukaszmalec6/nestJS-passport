@@ -1,7 +1,7 @@
 
 import {Injectable, UnauthorizedException, BadRequestException, Inject, NestMiddleware, Next} from '@nestjs/common';
 import {verify} from 'jsonwebtoken';
-import {Request} from '../../_common/interfaces';
+import {Request} from '../../_common/types';
 import {User} from '../../user/user.model';
 import {IJwtPayload} from '../types/jwt-payload.interface';
 import {TokenStorageService} from '../token-storage/token-storage.service';
