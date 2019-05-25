@@ -1,8 +1,9 @@
 import {Injectable} from '@nestjs/common';
 import {sign} from 'jsonwebtoken';
 import {IToken} from './interfaces/token.interface';
-import {TokenStorageService} from '../token-storage/token-storage.service';
+import {TokenStorageService} from './token-storage/token-storage.service';
 import {ConfigService} from '../config/config.service';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -24,15 +25,16 @@ export class AuthService {
   }
 
   public async createToken(userId: string): Promise<IToken> {
-    const accessToken = sign({userId}, this.accessTokenSecret, {expiresIn: this.accessTokenExpiresIn});
-    const refreshToken = sign({userId}, this.refreshTokenSecret, {expiresIn: this.refreshTokenExpiresIn});
-    await this.tokenRepo.saveTokens(userId, accessToken, refreshToken);
+    const sessionKey = uuid.v4();
+    const accessToken = sign({userId, sessionKey}, this.accessTokenSecret, {expiresIn: this.accessTokenExpiresIn});
+    const refreshToken = sign({userId, sessionKey}, this.refreshTokenSecret, {expiresIn: this.refreshTokenExpiresIn});
+    await this.tokenRepo.saveTokens(userId, accessToken, refreshToken, sessionKey);
     return {accessToken, refreshToken};
   }
 
-  public async logout(userId: string): Promise<boolean> {
+  public async destroyTokens(userId: string, sessionKey: string): Promise<boolean> {
     try {
-      await this.tokenRepo.deleteTokens(userId);
+      await this.tokenRepo.deleteTokens(userId, sessionKey);
       return true;
     } catch (error) {
       return false;

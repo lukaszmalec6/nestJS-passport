@@ -4,14 +4,14 @@ import {LocalStrategy} from './passport/local.strategy';
 import {JwtStrategy} from './passport/jwt.strategy';
 import {AuthService} from './auth.service';
 import {AuthController} from './auth.controller';
-import {bodyValidator} from '../middlewares/body-validator.middleware';
+import {bodyValidator} from '../_common/middlewares';
 import {registerSchema} from './validators/register.schema';
 import {loginSchema} from './validators/login.schema';
-import {JWTStrategySymbols} from './passport/jwt.strategy.symbols';
-import {RefreshTokenMiddleware} from './middlewares.ts/refresh-token.middleware';
-import {TokenStorageModule} from '../token-storage/token-storage';
-import {EmailSenderModule} from '../email-sender/email-sender.module';
-import {ConfigModule} from '../config/config.module';
+import {JWTStrategySymbols} from '../injectable';
+import {RefreshTokenMiddleware} from './middlewares/refresh-token.middleware';
+import {TokenStorageModule} from './token-storage/token-storage';
+import {EmailSenderModule} from '../_common/email-sender';
+import {ConfigModule} from '../config';
 import {UserModule} from '../user/user.module';
 
 @Module({

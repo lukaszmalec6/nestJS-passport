@@ -39,8 +39,8 @@
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.3",
     "rxjs": "^6.2.2",
-    "sequelize": "^4.42.0",
-    "sequelize-typescript": "^0.6.7",
+    "sequelize": "4.42.0",
+    "sequelize-typescript": "0.6.7",
     "typescript": "^3.3.3"
   },
   "devDependencies": {

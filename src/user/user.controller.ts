@@ -2,9 +2,9 @@ import {Controller, Get, NotFoundException, BadRequestException, Query, Req, Use
 import {UserSerivce} from './user.service';
 import {validate, string} from 'joi';
 import {User} from './user.model';
-import {Request} from '../interfaces';
+import {Request} from '../_common/interfaces';
 import {AuthGuard} from '@nestjs/passport';
-import {JWTStrategySymbols} from '../auth/passport/jwt.strategy.symbols';
+import {JWTStrategySymbols} from '../injectable';
 
 @Controller('api/user')
 export class UserController {

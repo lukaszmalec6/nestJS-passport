@@ -1,10 +1,9 @@
 import {Module} from '@nestjs/common';
 import {Sequelize} from 'sequelize-typescript';
-import {User} from '../user/user.model';
-import {ConfigService} from '../config/config.service';
-import {HyperLogger, LoggerModule} from '../logger/logger.module';
-import {InjectableSymbols} from '../injectable';
-import {ConfigModule} from '../config/config.module';
+import {User} from '../../user/user.model';
+import {HyperLogger, LoggerModule} from '../logger';
+import {InjectableSymbols} from '../../injectable';
+import {ConfigModule, ConfigService} from '../../config/';
 
 @Module({
   imports: [ConfigModule, LoggerModule],

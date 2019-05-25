@@ -2,11 +2,11 @@ import {Controller, Post, Get, Req, UseGuards} from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
 import {AuthService} from './auth.service';
 import {IToken} from './interfaces/token.interface';
-import {RolesGuard} from './guards/roles.guard';
+import {RolesGuard} from '../_common/guards/roles.guard';
 import {UserRole} from '../user/user.model';
-import {JWTStrategySymbols} from './passport/jwt.strategy.symbols';
-import {Request} from '../interfaces';
-import {Roles} from '../decorators';
+import {Request} from '../_common/interfaces';
+import {Roles} from '../_common/decorators';
+import {JWTStrategySymbols} from '../injectable';
 
 @Controller('api/auth')
 export class AuthController {
@@ -108,6 +108,7 @@ export class AuthController {
 
   @Post('refresh')
   public async refreshToken(@Req() req: Request): Promise<IToken> {
+    await this.authService.destroyTokens(req.user.id, req.sessionKey);
     return await this.authService.createToken(req.user.id);
   }
 
@@ -131,7 +132,7 @@ export class AuthController {
   @Post('logout')
   @UseGuards(AuthGuard(JWTStrategySymbols.jwt))
   public async logout(@Req() req: Request): Promise<boolean> {
-    return await this.authService.logout(req.user.id);
+    return await this.authService.destroyTokens(req.user.id, req.sessionKey);
   }
 
   @Get('authorized')

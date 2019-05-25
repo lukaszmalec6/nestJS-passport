@@ -3,9 +3,9 @@ import {use} from 'passport';
 import {Strategy} from 'passport-local';
 import {createHmac} from 'crypto';
 import {UserSerivce} from '../../user/user.service';
-import {JWTStrategySymbols} from './jwt.strategy.symbols';
-import {Request} from '../../interfaces';
-import {EmailSenderService} from '../../email-sender/email-sender.service';
+import {JWTStrategySymbols} from '../../injectable';
+import {Request} from '../../_common/interfaces';
+import {EmailSenderService} from '../../_common/email-sender';
 import {ConfigService} from '../../config/config.service';
 
 @Injectable()

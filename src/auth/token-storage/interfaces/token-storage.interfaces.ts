@@ -4,6 +4,7 @@ export enum RedisKeyPrefix {
 }
 
 export interface IRedisClient {
+  on: any;
   set: (key: string, value: string) => Promise<any>;
   get: (key: string) => Promise<string>;
   // await this.client.scan('0', `MATCH`, `*`, `COUNT`, 1000);

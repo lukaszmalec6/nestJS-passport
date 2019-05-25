@@ -1,5 +1,5 @@
 export interface IJwtPayload {
   readonly userId: string;
-  readonly iat: number;
+  readonly sessionKey: string;
   readonly exp: number;
 };

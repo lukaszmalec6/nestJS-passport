@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {MailerService, ISendMailOptions} from '@nest-modules/mailer';
-import {HyperLogger} from '../logger/logger.module';
+import {HyperLogger} from '../logger';
 
 @Injectable()
 export class EmailSenderService {
