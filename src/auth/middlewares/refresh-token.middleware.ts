@@ -3,7 +3,7 @@ import {Injectable, UnauthorizedException, BadRequestException, Inject, NestMidd
 import {verify} from 'jsonwebtoken';
 import {Request} from '../../_common/interfaces';
 import {User} from '../../user/user.model';
-import {IJwtPayload} from '../interfaces/jwt-payload.interface';
+import {IJwtPayload} from '../types/jwt-payload.interface';
 import {TokenStorageService} from '../token-storage/token-storage.service';
 import {ConfigService} from '../../config/config.service';
 

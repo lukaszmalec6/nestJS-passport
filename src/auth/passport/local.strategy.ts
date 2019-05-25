@@ -27,6 +27,11 @@ export class LocalStrategy {
   };
 
   private init(): void {
+
+    /*
+     REGISTER
+    */
+
     use(JWTStrategySymbols.register, new Strategy({
       usernameField: 'email',
       passwordField: 'password',
@@ -45,6 +50,10 @@ export class LocalStrategy {
         done(error, false);
       }
     }));
+
+    /*
+      LOGIN
+    */
 
     use(JWTStrategySymbols.login, new Strategy({
       usernameField: 'email',

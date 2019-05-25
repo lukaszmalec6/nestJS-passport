@@ -1,9 +1,9 @@
 import {Injectable} from '@nestjs/common';
 import {sign} from 'jsonwebtoken';
-import {IToken} from './interfaces/token.interface';
 import {TokenStorageService} from './token-storage/token-storage.service';
 import {ConfigService} from '../config/config.service';
 import * as uuid from 'uuid';
+import {UserToken} from './types';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +24,7 @@ export class AuthService {
     this.refreshTokenSecret = this.config.get('REFRESH_TOKEN_SECRET');
   }
 
-  public async createToken(userId: string): Promise<IToken> {
+  public async createToken(userId: string): Promise<UserToken> {
     const sessionKey = uuid.v4();
     const accessToken = sign({userId, sessionKey}, this.accessTokenSecret, {expiresIn: this.accessTokenExpiresIn});
     const refreshToken = sign({userId, sessionKey}, this.refreshTokenSecret, {expiresIn: this.refreshTokenExpiresIn});

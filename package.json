@@ -25,6 +25,7 @@
     "@nestjs/common": "^5.4.0",
     "@nestjs/core": "^5.4.0",
     "@nestjs/passport": "^5.1.0",
+    "@nestjs/swagger": "^3.0.2",
     "apidoc": "^0.17.7",
     "crypto": "^1.0.1",
     "dotenv": "^8.0.0",
@@ -41,6 +42,7 @@
     "rxjs": "^6.2.2",
     "sequelize": "4.42.0",
     "sequelize-typescript": "0.6.7",
+    "swagger-ui-express": "^4.0.4",
     "typescript": "^3.3.3"
   },
   "devDependencies": {
